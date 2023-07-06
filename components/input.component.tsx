@@ -1,14 +1,34 @@
-const Input = () => {
+import React from 'react';
+
+type InputProps = {
+  id: string,
+  onChange: any,
+  value: string,
+  label: string,
+  type?: string
+};
+
+const Input: React.FC<InputProps> = ({
+  id,
+  onChange,
+  value,
+  label,
+  type
+}) => {
   return (
     <div className="relative">
       <input
-      id = "email"
+        id = {id}
+        value = {value}
+        type = {type}
+        onChange={onChange}
         className="
                 block
                 rounded-md
                 px-6
                 pt-6
                 pb-1
+                
                 w-full
                 text-md
                 text-white
@@ -20,7 +40,7 @@ const Input = () => {
             "
             placeholder=" "
       />
-      <label htmlFor="email" 
+      <label htmlFor={id} 
       className="
         text-zinc-400
         absolute
@@ -36,7 +56,7 @@ const Input = () => {
         peer-placeholder-shown:translate-y-0
         peer-focus:scale-75
         peer-focus:-translate-y-3
-        ">Email</label>
+        ">{label}</label>
     </div>
   );
 };
