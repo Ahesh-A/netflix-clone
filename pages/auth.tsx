@@ -1,6 +1,8 @@
 import Input from "@/components/input.component";
 import { useState, useCallback } from "react";
+import { signIn } from "next-auth/react";
 
+import axios from "axios";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [username, setUserName] = useState("");
@@ -12,6 +14,31 @@ const Auth = () => {
       currentVarinat === "Login" ? "Register" : "Login"
     );
   }, []);
+
+  const register = useCallback(async () => {
+    try {
+      await axios.post("/api/register", {
+        email,
+        username,
+        password,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [email, username, password]);
+
+  const login = useCallback(async () => {
+    try {
+      await signIn('credentials', {
+        email,
+        password,
+        redirect: false,          
+        callbackUrl: '/'
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },[email, password]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-fixed bg-center bg-cover">
@@ -25,13 +52,15 @@ const Auth = () => {
               {variant}
             </h2>
             <div className="flex flex-col gap-4">
-              {variant === 'Register' && <Input
-                label="UserName"
-                onChange={(e: any) => setUserName(e.target.value)}
-                id="username"
-                type="text"
-                value={username}
-              />}
+              {variant === "Register" && (
+                <Input
+                  label="UserName"
+                  onChange={(e: any) => setUserName(e.target.value)}
+                  id="username"
+                  type="text"
+                  value={username}
+                />
+              )}
               <Input
                 label="Email"
                 onChange={(e: any) => setEmail(e.target.value)}
@@ -47,16 +76,21 @@ const Auth = () => {
                 value={password}
               />
             </div>
-            <button className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
-              {variant === 'Register' ? 'Register': 'Login'}
+            <button
+              onClick={variant === 'Login' ? login : register}
+              className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition"
+            >
+              {variant === "Register" ? "Register" : "Login"}
             </button>
             <p className="text-neutral-500 mt-12">
-              First time using Netflix?
-              <span className="text-white ml-1 hover:underline cursor-pointer "
-                onClick = {toggleVariant}
+              {variant === "Login"
+                ? "First time using Netflix?"
+                : "Already have an account?"}
+              <span
+                className="text-white ml-1 hover:underline cursor-pointer "
+                onClick={toggleVariant}
               >
-                
-                {variant === 'Register'? 'Login' : 'Create new account'}
+                {variant === "Register" ? "Login" : "Create new account"}
               </span>
             </p>
           </div>

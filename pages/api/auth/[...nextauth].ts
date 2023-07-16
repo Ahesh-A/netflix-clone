@@ -19,7 +19,7 @@ export default  NextAuth({
                 }
             },
             async authorize(credentials) {
-                if(!credentials?.email || credentials?.password) {
+                if(!credentials?.email || !credentials?.password) {
                     throw new Error('Email and Password required');
                 }
 
@@ -27,7 +27,7 @@ export default  NextAuth({
                     where: {
                         email: credentials.email
                     }
-                })
+                });
 
                 if(!user || !user.hashedPassword) {
                     throw new Error('Email does not exists');
@@ -55,7 +55,6 @@ export default  NextAuth({
     },
     jwt: {
         secret: process.env.NEXTAUTH_JWT_SECRET,
-
     },
     secret: process.env.NEXTAUTH_SECRET,
     
